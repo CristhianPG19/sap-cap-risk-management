@@ -7,7 +7,7 @@ service RiskManagementService
 {
     @cds.redirection.target
     @readonly
-    entity A_BusinessPartner as
+    entity A_BusinessPartner as 
         projection on BusinessPartnerA2X.A_BusinessPartner
         {
             BusinessPartner,
