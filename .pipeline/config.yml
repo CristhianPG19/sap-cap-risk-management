@@ -6,4 +6,4 @@ steps:
     buildTarget: 'CF'
   
   cloudFoundryDeploy:
-    mtaPath: '*.mtar'
+    mtaPath: '*.mtar' 
