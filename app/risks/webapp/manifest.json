@@ -5,10 +5,23 @@
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
-      "version": "0.0.1"
+      "version": "0.0.2"
     },
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
+    "crossNavigation": {
+      "inbounds": {
+        "Risk-manage": {
+          "semanticObject": "RiskManagement",
+          "action": "manage",
+          "title": "{{appTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    },
     "resources": "resources.json",
     "sourceTemplate": {
       "id": "@sap/generator-fiori:lrop",
@@ -25,6 +38,10 @@
         }
       }
     }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "RiskManagement"
   },
   "sap.ui": {
     "technology": "UI5",

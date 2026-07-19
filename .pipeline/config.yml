@@ -1,0 +1,9 @@
+general:
+  buildTool: mta
+  
+steps:
+  mtaBuild:
+    buildTarget: 'CF'
+  
+  cloudFoundryDeploy:
+    mtaPath: '*.mtar'
