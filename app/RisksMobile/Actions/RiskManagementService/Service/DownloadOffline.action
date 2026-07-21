@@ -1,0 +1,18 @@
+{
+    "Service": "/RisksMobile/Services/RiskManagementService.service",
+    "DefiningRequests": [{
+            "Name": "Mitigations",
+            "Query": "Mitigations"
+        },
+        {
+            "Name": "Risks",
+            "Query": "Risks"
+        }
+    ],
+    "_Type": "Action.Type.OfflineOData.Download",
+    "ActionResult": {
+        "_Name": "sync"
+    },
+    "OnFailure": "/RisksMobile/Actions/RiskManagementService/Service/SyncFailureMessage.action",
+    "OnSuccess": "/RisksMobile/Rules/RiskManagementService/ErrorArchive_CheckForSyncError.js"
+}

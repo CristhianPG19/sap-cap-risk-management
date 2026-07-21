@@ -1,0 +1,12 @@
+{
+    "DestinationName": "RiskManagementService",
+    "OfflineEnabled": true,
+    "LanguageURLParam": "",
+    "OnlineOptions": {},
+    "OfflineOptions": {
+	"StoreParameters": {}
+},
+    "PathSuffix": "",
+    "SourceType": "Local",
+    "ServiceUrl":""
+}

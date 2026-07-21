@@ -1,0 +1,10 @@
+{
+    "_Type": "Action.Type.OfflineOData.Close",
+    "Service": "/RisksMobile/Services/RiskManagementService.service",
+    "Force": true,
+    "ActionResult": {
+        "_Name": "close"
+    },
+    "OnSuccess": "/RisksMobile/Actions/RiskManagementService/Service/CloseOfflineSuccessMessage.action",
+    "OnFailure": "/RisksMobile/Actions/RiskManagementService/Service/CloseOfflineFailureMessage.action"
+}

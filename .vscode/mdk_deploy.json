@@ -1,0 +1,10 @@
+{
+	"Application": "/home/user/projects/RiskManagement/app/RisksMobile/Application.app",
+	"Target": "Cloud Foundry",
+	"OtherApps": [
+		{
+			"Application": "/home/user/projects/RiskManagement/app/RisksMobile/Application.app",
+			"Target": "Cloud Foundry"
+		}
+	]
+}
