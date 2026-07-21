@@ -1,6 +1,0 @@
-{
-    "Message": "$(L,Action_RequiredFields_Failure)",
-    "Duration": 4,
-    "Animated": true,
-    "_Type": "Action.Type.BannerMessage"
-}

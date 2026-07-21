@@ -1,0 +1,3 @@
+VCAP_SERVICES='{"xsuaa":[{"name":"PT-Local-router-RiskManagement-uaa","instance_name":"PT-Local-router-RiskManagement-uaa","label":"xsuaa","tags":["xsuaa","endpoint:undefined","org:undefined","space:undefined"],"plan":"application"}]}'
+destinations='[{"name":"srv-api","url":"http://localhost:4004","forwardAuthToken":true}]'
+cds_requires='{"approuter":{"kind":"cloudfoundry"}}'

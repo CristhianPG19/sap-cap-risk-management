@@ -1,8 +1,0 @@
-{
-    "Message": "$(L,Action_Sync_Started)",
-    "CompletionMessage": "$(L,Action_Sync_Completed)",
-    "CompletionTimeout": 7,
-    "OnSuccess": "/RisksMobile/Actions/RiskManagementService/Service/UploadOffline.action",
-    "OnFailure": "/RisksMobile/Actions/RiskManagementService/Service/SyncFailureMessage.action",
-    "_Type": "Action.Type.ProgressBanner"
-}

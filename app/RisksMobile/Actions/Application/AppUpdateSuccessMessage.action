@@ -1,6 +1,0 @@
-{
-    "Animated": true,
-    "Duration": 2,
-    "Message": "$(L,Action_App_Update_Complete)",
-    "_Type": "Action.Type.ToastMessage"
-}

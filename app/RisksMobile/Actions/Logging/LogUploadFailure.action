@@ -1,6 +1,0 @@
-{
-    "Message": "$(L,Action_Log_Upload_Failed_Message): {#ActionResults:UploadLog/error}",
-    "OKCaption": "$(L,Action_OK)",
-    "Title": "$(L,Action_Log_Upload_Failed_Title)",
-    "_Type": "Action.Type.Message"
-}

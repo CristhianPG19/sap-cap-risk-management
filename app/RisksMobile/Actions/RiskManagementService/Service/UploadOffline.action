@@ -1,9 +1,0 @@
-{
-    "Service": "/RisksMobile/Services/RiskManagementService.service",
-    "_Type": "Action.Type.OfflineOData.Upload",
-    "ActionResult": {
-        "_Name": "sync"
-    },
-    "OnSuccess": "/RisksMobile/Actions/RiskManagementService/Service/DownloadStartedMessage.action",
-    "OnFailure": "/RisksMobile/Actions/RiskManagementService/Service/SyncFailureMessage.action"
-}

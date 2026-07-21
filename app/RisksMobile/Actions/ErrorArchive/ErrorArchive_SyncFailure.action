@@ -1,8 +1,0 @@
-{
-    "_Type": "Action.Type.BannerMessage",
-    "Message": "$(L,Action_ErrorArchive_Upload_Failed)",
-    "Duration": 0,
-    "Animated": false,
-    "OnActionLabelPress": "/RisksMobile/Actions/ErrorArchive/NavToErrorArchive_List.action",
-    "ActionLabel": "$(L,Action_ErrorArchive_View_Errors)"
-}

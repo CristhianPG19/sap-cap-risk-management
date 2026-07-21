@@ -1,2 +1,0 @@
-Pass:
-Generated bundle file /home/user/projects/RiskManagement/app/RisksMobile/.build/RisksMobile/.build/uploadBundle.zip
