@@ -57,7 +57,10 @@ modules:
           SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}-~{app-uri}
       - name: RiskManagement-destination
     build-parameters:
-      builder: npm
+      builder: custom
+      commands:
+        - npm install
+        - npm install @sap/low-code-event-handler@1.2.5
     parameters:
       instances: 1
       memory: 256M
@@ -99,6 +102,7 @@ modules:
           name: mtx-api # must be used in xs-app.json as well
           url: ~{mtx-url}
       - name: RiskManagement-auth
+      - name: RiskManagement-html5-repo-runtime
     provides:
       - name: app-api
         properties:
@@ -195,6 +199,11 @@ resources:
           onUnSubscriptionAsync: true
           onUpdateDependenciesAsync: true
           callbackTimeoutMillis: 300000 # Increase if your deployments are taking longer than that
+  - name: RiskManagement-html5-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
