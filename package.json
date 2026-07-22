@@ -7,6 +7,9 @@
     "@sap-cloud-sdk/http-client": "^4",
     "@sap-cloud-sdk/resilience": "^4",
     "@sap/cds": "^9",
+    "@sap/cds-mtxs": "^3",
+    "@sap/low-code-event-handler": "^1.2.3",
+    "@sap/xsenv": "^6.2.1",
     "@sap/xssec": "^4"
   },
   "devDependencies": {
@@ -14,8 +17,8 @@
     "@sap/cds-dk": "^9",
     "@sap/dev-cap-tools": "^1.31.0",
     "cds-plugin-ui5": "^0.17.0",
-    "rimraf": "^5.0.5",
-    "mbt": "^1.2.49"
+    "mbt": "^1.2.49",
+    "rimraf": "^5.0.5"
   },
   "scripts": {
     "start": "cds-serve",
@@ -41,9 +44,11 @@
       },
       "[production]": {
         "db": "hana",
-        "auth": "xsuaa"
+        "auth": "xsuaa",
+        "multitenancy": true
       }
-    }
+    },
+    "profile": "with-mtx-sidecar"
   },
   "workspaces": [
     "app/*"
