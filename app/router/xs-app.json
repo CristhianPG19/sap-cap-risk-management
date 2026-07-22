@@ -8,7 +8,7 @@
     {
       "source": "^/service/RiskManagementService/(.*)$",
       "target": "/service/RiskManagementService/$1",
-      "destination": "RiskManagement-app-srv",
+      "destination": "srv-api",
       "authenticationType": "xsuaa"
     },
     {
