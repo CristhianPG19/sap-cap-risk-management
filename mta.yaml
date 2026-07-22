@@ -57,7 +57,7 @@ modules:
           SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}-~{app-uri}
       - name: RiskManagement-destination
     build-parameters:
-      builder: npm-ci
+      builder: npm
     parameters:
       instances: 1
       memory: 256M
