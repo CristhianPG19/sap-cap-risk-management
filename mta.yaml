@@ -52,6 +52,7 @@ modules:
       - name: RiskManagement-auth
       - name: RiskManagement-db
       - name: RiskManagement-registry
+      - name: RiskManagement-html5-repo-runtime
       - name: app-api
         properties:
           SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}-~{app-uri}
