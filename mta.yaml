@@ -3,126 +3,204 @@ ID: RiskManagement
 description: A simple CAP project.
 version: 1.0.1
 modules:
-- name: RiskManagement-srv
-  type: nodejs
-  path: gen/srv
-  requires:
-  - name: RiskManagement-auth
-  - name: RiskManagement-db
-  - name: RiskManagement-destination
-  provides:
-  - name: srv-api
-    properties:
-      srv-url: ${default-url}
-  parameters:
-    buildpack: nodejs_buildpack
-    instances: 1
-  build-parameters:
-    builder: npm-ci
-- name: RiskManagement-db-deployer
-  type: hdb
-  path: gen/db
-  requires:
-  - name: RiskManagement-db
-  parameters:
-    buildpack: nodejs_buildpack
-- name: RiskManagement-app-content
-  type: com.sap.application.content
-  path: .
-  requires:
-  - name: RiskManagement-repo-host
-    parameters:
-      content-target: true
-  build-parameters:
-    build-result: resources
+  - name: RiskManagement-srv
+    type: nodejs
+    path: gen/srv
     requires:
-    - artifacts:
-      - nsrisks.zip
-      name: nsrisks
-      target-path: resources/
-- name: nsrisks
-  type: html5
-  path: app/risks
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm install
-    - npm run build:cf
-    supported-platforms: []
-resources:
-- name: RiskManagement-auth
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      oauth2-configuration:
-        credential-types:
-        - binding-secret
-        - x509
-      role-collections:
-      - description: generated
-        name: RiskViewer (RiskManagement ${org}-${space})
-        role-template-references:
-        - $XSAPPNAME.RiskViewer
-      - description: generated
-        name: RiskManager (RiskManagement ${org}-${space})
-        role-template-references:
-        - $XSAPPNAME.RiskManager
-      tenant-mode: dedicated
-      xsappname: RiskManagement-${org}-${space}
-    path: ./xs-security.json
-    service: xsuaa
-    service-plan: application
-- name: RiskManagement-db
-  type: com.sap.xs.hdi-container
-  parameters:
-    service: hana
-    service-plan: hdi-shared
-- name: RiskManagement-destination
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: true
-      init_data:
-        subaccount:
-          destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          - Authentication: NoAuthentication
-            HTML5.DynamicDestination: true
-            HTML5.ForwardAuthToken: true
-            Name: srv-api
-            ProxyType: Internet
-            Type: HTTP
-            URL: ~{srv-api/srv-url}
-          - Name: RiskManagement-repo-host
-            ServiceInstanceName: RiskManagement-html5-service
-            ServiceKeyName: RiskManagement-repo-host-key
-            sap.cloud.service: RiskManagement
-          existing_destinations_policy: update
-    service: destination
-    service-plan: lite
-  requires:
-  - name: srv-api
-  - name: RiskManagement-repo-host
+      - name: RiskManagement-auth
+      - name: RiskManagement-destination
+      - name: RiskManagement-db
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
     parameters:
-      service-key:
-        name: RiskManagement-repo-host-key
-- name: RiskManagement-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: RiskManagement-html5-service
-    service-plan: app-host
+      buildpack: nodejs_buildpack
+      instances: 1
+    build-parameters:
+      builder: npm-ci
+  - name: RiskManagement-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: RiskManagement-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - nsrisks.zip
+          name: nsrisks
+          target-path: resources/
+  - name: nsrisks
+    type: html5
+    path: app/risks
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms:
+        []
+
+  - name: RiskManagement-mtx
+    type: nodejs
+    path: gen/mtx/sidecar
+    requires:
+      - name: RiskManagement-auth
+      - name: RiskManagement-db
+      - name: RiskManagement-registry
+      - name: app-api
+        properties:
+          SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}-~{app-uri}
+      - name: RiskManagement-destination
+    build-parameters:
+      builder: npm-ci
+    parameters:
+      instances: 1
+      memory: 256M
+      disk-quota: 512M
+    hooks:
+      - name: upgrade-all
+        type: task
+        phases:
+          - blue-green.application.before-start.idle
+          - deploy.application.before-start
+        parameters:
+          name: upgrade
+          memory: 512M # increase as required
+          disk-quota: 768M # increase as required
+          command: cds-mtx upgrade '*'
+    provides:
+      - name: mtx-api
+        properties:
+          mtx-url: ${default-url}
+  - name: RiskManagement
+    type: approuter.nodejs
+    path: app/router
+    parameters:
+      keep-existing-routes: true
+      disk-quota: 256M
+      memory: 256M
+    properties:
+      TENANT_HOST_PATTERN: "^(.*)-${default-uri}"
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api # must be used in xs-app.json as well
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: mtx-api
+        group: destinations
+        properties:
+          name: mtx-api # must be used in xs-app.json as well
+          url: ~{mtx-url}
+      - name: RiskManagement-auth
+    provides:
+      - name: app-api
+        properties:
+          app-protocol: ${protocol}
+          app-uri: ${default-uri}
+resources:
+  - name: RiskManagement-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
+          redirect-uris:
+            - https://*~{app-api/app-uri}/**
+        role-collections:
+          - description: generated
+            name: RiskViewer (RiskManagement ${org}-${space})
+            role-template-references:
+              - $XSAPPNAME.RiskViewer
+          - description: generated
+            name: RiskManager (RiskManagement ${org}-${space})
+            role-template-references:
+              - $XSAPPNAME.RiskManager
+        tenant-mode: shared
+        xsappname: RiskManagement-${org}-${space}
+      path: ./xs-security.json
+      service: xsuaa
+      service-plan: application
+    requires:
+      - name: app-api
+  - name: RiskManagement-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          subaccount:
+            destinations:
+              - Authentication: NoAuthentication
+                Name: ui5
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://ui5.sap.com
+              - Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+                Name: srv-api
+                ProxyType: Internet
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+              - Name: RiskManagement-repo-host
+                ServiceInstanceName: RiskManagement-html5-service
+                ServiceKeyName: RiskManagement-repo-host-key
+                sap.cloud.service: RiskManagement
+            existing_destinations_policy: update
+      service: destination
+      service-plan: lite
+    requires:
+      - name: srv-api
+      - name: RiskManagement-repo-host
+        parameters:
+          service-key:
+            name: RiskManagement-repo-host-key
+  - name: RiskManagement-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: RiskManagement-html5-service
+      service-plan: app-host
+  - name: RiskManagement-db
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: service-manager
+      service-plan: container
+  - name: RiskManagement-registry
+    type: org.cloudfoundry.managed-service
+    requires:
+      - name: mtx-api
+    parameters:
+      service: saas-registry
+      service-plan: application
+      config:
+        xsappname: RiskManagement-${org}-${space}
+        appName: RiskManagement-${org}-${space}
+        displayName: RiskManagement
+        description: A simple CAP project.
+        category: 'Category'
+        appUrls:
+          getDependencies: ~{mtx-api/mtx-url}/-/cds/saas-provisioning/dependencies
+          onSubscription: ~{mtx-api/mtx-url}/-/cds/saas-provisioning/tenant/{tenantId}
+          onSubscriptionAsync: true
+          onUnSubscriptionAsync: true
+          onUpdateDependenciesAsync: true
+          callbackTimeoutMillis: 300000 # Increase if your deployments are taking longer than that
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
 build-parameters:
   before-all:
-  - builder: custom
-    commands:
-    - npm ci
-    - npx cds build --production
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
