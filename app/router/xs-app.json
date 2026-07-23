@@ -18,5 +18,5 @@
       "authenticationType": "xsuaa"
     }
   ],
-  "welcomeFile": "/RiskManagementLaunchpad/"
+  "welcomeFile": "/nsrisks/index.html" 
 }

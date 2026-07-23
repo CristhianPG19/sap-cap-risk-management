@@ -6,9 +6,10 @@
     "@sap-cloud-sdk/connectivity": "^4",
     "@sap-cloud-sdk/http-client": "^4",
     "@sap-cloud-sdk/resilience": "^4",
+    "@sap/approuter": "22.0.3",
     "@sap/cds": "^9",
     "@sap/cds-mtxs": "^3",
-    "@sap/low-code-event-handler": "^1.2.5",
+    "@sap/low-code-event-handler": "^1.2.2",
     "@sap/xsenv": "^6.2.1",
     "@sap/xssec": "^4"
   },
@@ -45,7 +46,9 @@
       "[production]": {
         "db": "hana",
         "auth": "xsuaa",
-        "multitenancy": true
+        "multitenancy": true,
+        "html5-repo": true,
+        "destinations": true
       },
       "[with-mtx]": {
         "multitenancy": true
