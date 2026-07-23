@@ -90,10 +90,7 @@ modules:
       memory: 256M
     properties:
       TENANT_HOST_PATTERN: "^(.*)-${default-uri}"
-      destinations:
-        - name: ui5
-          url: 'https://ui5.sap.com'
-          forwardAuthToken: false
+      destinations: '[{"name": "ui5", "url": "https://ui5.sap.com"}]'
     requires:
       - name: srv-api
         group: destinations
